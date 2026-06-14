@@ -39,12 +39,12 @@
     
     <!-- Quick Actions -->
     <div class="header-actions">
-      <button id="btn-load-demo" class="btn btn-secondary" title="Örnek Markdown Yükle">
-        <i data-lucide="sparkles"></i>
-        <span>Örnek Yükle</span>
-      </button>
       <button id="btn-clear" class="btn btn-danger" title="Temizle">
         <i data-lucide="trash-2"></i>
+      </button>
+      <button id="btn-header-print" class="btn btn-primary" title="Tarayıcı ile Yazdır / PDF Kaydet">
+        <i data-lucide="printer"></i>
+        <span>PDF Kaydet</span>
       </button>
     </div>
   </header>
@@ -224,6 +224,9 @@
         <li><strong>Kenar Boşlukları:</strong> Yok (None) veya Varsayılan (Default) yapın. (Programın kenar boşlukları ile çakışmaması için)</li>
         <li><strong>Üstbilgi ve Altbilgi:</strong> Gizleyin (Tarih ve URL'lerin PDF'te görünmemesi için).</li>
       </ul>
+      <div class="modal-note">
+        <p>💡 <strong>Alternatif Yöntem:</strong> Eğer yazdırma penceresi açılmazsa veya desteklenmiyorsa, tarayıcınızın sağ üstündeki menüden (üç nokta) <strong>Paylaş &gt; Yazdır</strong> adımlarını takip ederek de PDF kaydedebilirsiniz.</p>
+      </div>
       <div class="modal-footer">
         <button id="btn-start-print" class="btn btn-primary">Devam Et ve Yazdır</button>
         <button id="btn-close-instruction" class="btn btn-secondary">Kapat</button>

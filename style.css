@@ -947,6 +947,25 @@ a:hover {
   margin-top: 10px;
 }
 
+.modal-note {
+  margin-top: 5px;
+  padding: 10px 14px;
+  background-color: rgba(255, 255, 255, 0.03);
+  border-radius: 6px;
+  border-left: 3px solid var(--accent-color);
+}
+
+.modal-note p {
+  margin: 0;
+  font-size: 0.8rem;
+  line-height: 1.4;
+  color: var(--text-secondary);
+}
+
+.modal-note strong {
+  color: var(--accent-color);
+}
+
 /* Mobile Tabs (hidden by default on desktop) */
 .mobile-tabs {
   display: none;

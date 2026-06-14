@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const checkSyncScroll = document.getElementById('check-sync-scroll');
   const checkPageBreaks = document.getElementById('check-page-breaks');
   
-  const btnLoadDemo = document.getElementById('btn-load-demo');
+  const btnHeaderPrint = document.getElementById('btn-header-print');
   const btnClear = document.getElementById('btn-clear');
   const btnPrintBrowser = document.getElementById('btn-print-browser');
   
@@ -361,16 +361,6 @@ Belgenizi hazırladıktan sonra sol menüdeki **Tarayıcı ile Yazdır / Kaydet*
     markdownInput.scrollTop = scrollPercentage * (markdownInput.scrollHeight - markdownInput.clientHeight);
   });
 
-  // Load Demo Content
-  btnLoadDemo.addEventListener('click', () => {
-    if (confirm('Mevcut içeriğiniz silinecek ve örnek şablon yüklenecektir. Emin misiniz?')) {
-      markdownInput.value = demoMarkdown;
-      renderMarkdown();
-      // On mobile, switch to editor tab when demo is loaded
-      setActiveTab('editor');
-    }
-  });
-
   // Clear Editor
   btnClear.addEventListener('click', () => {
     if (confirm('Tüm metni temizlemek istediğinize emin misiniz?')) {
@@ -381,13 +371,28 @@ Belgenizi hazırladıktan sonra sol menüdeki **Tarayıcı ile Yazdır / Kaydet*
   });
 
   // High Quality Browser Print
-  btnPrintBrowser.addEventListener('click', () => {
+  const handlePrintTrigger = () => {
+    if (typeof window.print !== 'function') {
+      alert("Tarayıcınız doğrudan yazdırma/kaydetme komutunu desteklemiyor.\n\nAlternatif Çözüm:\n1. Tarayıcınızın sağ üstündeki üç noktaya (menü) dokunun.\n2. 'Paylaş' seçeneğini seçin.\n3. Açılan listeden 'Yazdır'ı seçerek PDF olarak kaydedebilirsiniz.");
+      return;
+    }
     printInstruction.classList.add('active');
-  });
+  };
+
+  if (btnPrintBrowser) {
+    btnPrintBrowser.addEventListener('click', handlePrintTrigger);
+  }
+  if (btnHeaderPrint) {
+    btnHeaderPrint.addEventListener('click', handlePrintTrigger);
+  }
 
   btnStartPrint.addEventListener('click', () => {
     printInstruction.classList.remove('active');
-    window.print();
+    if (typeof window.print === 'function') {
+      window.print();
+    } else {
+      alert("Yazdırma desteği bulunamadı.");
+    }
   });
 
   btnCloseInstruction.addEventListener('click', () => {
@@ -403,8 +408,11 @@ Belgenizi hazırladıktan sonra sol menüdeki **Tarayıcı ile Yazdır / Kaydet*
 
   // Initial Load Trigger
   loadSettings();
-  if (markdownInput.value === '') {
+  // Only set to demoMarkdown if there are no settings in localStorage at all (first visit)
+  const hasSavedSettings = localStorage.getItem('md-to-pdf-settings') !== null;
+  if (!hasSavedSettings && markdownInput.value === '') {
     markdownInput.value = demoMarkdown;
+    saveSettings();
   }
   renderMarkdown();
   
