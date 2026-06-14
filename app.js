@@ -42,6 +42,15 @@ document.addEventListener('DOMContentLoaded', () => {
   const wordCount = document.getElementById('word-count');
   const charCount = document.getElementById('char-count');
 
+  // PDF Inverter DOM Elements
+  const pdfFileInput = document.getElementById('pdf-file-input');
+  const btnPdfClose = document.getElementById('btn-pdf-close');
+
+  // PDF Inverter State Variables
+  let pdfMode = false;
+  let pdfDocumentInstance = null;
+  let pdfScale = 1.6;
+
   // Default Markdown Template
   const demoMarkdown = `# Markdown'dan Dark PDF'e Çevirici 🌒
 
@@ -118,6 +127,154 @@ Belgenizi hazırladıktan sonra sol menüdeki **Tarayıcı ile Yazdır / Kaydet*
      CORE FUNCTIONS
      ========================================================================== */
 
+  // Dynamically load PDF.js libraries and stylesheet
+  let pdfjsPromise = null;
+  function loadPdfJs() {
+    if (pdfjsPromise) return pdfjsPromise;
+    
+    pdfjsPromise = new Promise((resolve, reject) => {
+      // Dynamically load PDF.js stylesheet
+      const link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.href = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf_viewer.min.css';
+      document.head.appendChild(link);
+      
+      if (window.pdfjsLib) {
+        resolve(window.pdfjsLib);
+        return;
+      }
+      
+      const script = document.createElement('script');
+      script.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js';
+      script.onload = () => {
+        window.pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
+        resolve(window.pdfjsLib);
+      };
+      script.onerror = (err) => {
+        pdfjsPromise = null;
+        reject(err);
+      };
+      document.head.appendChild(script);
+    });
+    
+    return pdfjsPromise;
+  }
+
+  // Handle selected PDF file
+  function handlePdfFile(file) {
+    previewOutput.innerHTML = `
+      <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 400px; gap: 18px; color: var(--text-secondary);">
+        <div class="spinner"></div>
+        <p style="font-size: 1.1rem; font-weight: 500; letter-spacing: 0.5px;">PDF Belgesi Yükleniyor ve Renkler Tersyüz Ediliyor...</p>
+        <p style="font-size: 0.85rem; color: var(--text-muted);">Lütfen bekleyin...</p>
+      </div>
+    `;
+    
+    setActiveTab('preview');
+    
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const buffer = e.target.result;
+      
+      loadPdfJs().then(pdfjs => {
+        pdfjs.getDocument({ data: buffer }).promise.then(pdfDoc => {
+          pdfDocumentInstance = pdfDoc;
+          pdfMode = true;
+          
+          document.body.classList.add('pdf-mode-active');
+          
+          renderPdfDocument();
+          
+        }).catch(err => {
+          alert("PDF belgesi yüklenirken hata oluştu: " + err.message);
+          exitPdfMode();
+        });
+      }).catch(err => {
+        alert("PDF kütüphanesi yüklenirken hata oluştu.");
+        exitPdfMode();
+      });
+    };
+    
+    reader.onerror = function() {
+      alert("Dosya okunurken hata oluştu.");
+    };
+    
+    reader.readAsArrayBuffer(file);
+  }
+
+  // Render PDF pages onto canvas elements + textLayer on top
+  function renderPdfDocument() {
+    if (!pdfDocumentInstance) return;
+    
+    previewOutput.className = 'markdown-body';
+    previewOutput.innerHTML = '';
+    
+    wordCount.textContent = `PDF Modu`;
+    charCount.textContent = `${pdfDocumentInstance.numPages} sayfa`;
+    
+    const numPages = pdfDocumentInstance.numPages;
+    let renderPagePromise = Promise.resolve();
+    
+    for (let i = 1; i <= numPages; i++) {
+      const pageNum = i;
+      
+      const pageWrapper = document.createElement('div');
+      pageWrapper.className = 'pdf-page-wrapper';
+      
+      const canvas = document.createElement('canvas');
+      canvas.className = 'pdf-page-canvas';
+      pageWrapper.appendChild(canvas);
+      
+      const textLayerDiv = document.createElement('div');
+      textLayerDiv.className = 'textLayer';
+      pageWrapper.appendChild(textLayerDiv);
+      
+      previewOutput.appendChild(pageWrapper);
+      
+      renderPagePromise = renderPagePromise.then(() => {
+        return pdfDocumentInstance.getPage(pageNum).then(page => {
+          const viewport = page.getViewport({ scale: pdfScale });
+          const context = canvas.getContext('2d');
+          canvas.height = viewport.height;
+          canvas.width = viewport.width;
+          
+          pageWrapper.style.width = `${viewport.width}px`;
+          pageWrapper.style.height = `${viewport.height}px`;
+          
+          const renderContext = {
+            canvasContext: context,
+            viewport: viewport
+          };
+          
+          return page.render(renderContext).promise.then(() => {
+            // Render Text Layer
+            return page.getTextContent().then(textContent => {
+              textLayerDiv.innerHTML = '';
+              return window.pdfjsLib.renderTextLayer({
+                textContentSource: textContent,
+                container: textLayerDiv,
+                viewport: viewport,
+                textDivs: []
+              }).promise;
+            });
+          });
+        });
+      });
+    }
+  }
+
+  // Restore Markdown editor mode
+  function exitPdfMode() {
+    pdfMode = false;
+    pdfDocumentInstance = null;
+    
+    document.body.classList.remove('pdf-mode-active');
+    
+    updatePreviewClass();
+    renderMarkdown();
+    setActiveTab('editor');
+  }
+
   // Load user settings from localStorage or use defaults
   function loadSettings() {
     const settings = JSON.parse(localStorage.getItem('md-to-pdf-settings')) || {
@@ -153,6 +310,7 @@ Belgenizi hazırladıktan sonra sol menüdeki **Tarayıcı ile Yazdır / Kaydet*
 
   // Save settings to localStorage
   function saveSettings() {
+    if (pdfMode) return;
     const settings = {
       theme: selectTheme.value,
       pageSize: selectPageSize.value,
@@ -346,6 +504,7 @@ Belgenizi hazırladıktan sonra sol menüdeki **Tarayıcı ile Yazdır / Kaydet*
 
   // Scroll Sync Logic
   markdownInput.addEventListener('scroll', () => {
+    if (pdfMode) return;
     if (!checkSyncScroll.checked) return;
     if (isScrollingPreview) {
       isScrollingPreview = false;
@@ -357,6 +516,7 @@ Belgenizi hazırladıktan sonra sol menüdeki **Tarayıcı ile Yazdır / Kaydet*
   });
 
   previewWrapper.addEventListener('scroll', () => {
+    if (pdfMode) return;
     if (!checkSyncScroll.checked) return;
     if (isScrollingEditor) {
       isScrollingEditor = false;
@@ -411,6 +571,34 @@ Belgenizi hazırladıktan sonra sol menüdeki **Tarayıcı ile Yazdır / Kaydet*
       printInstruction.classList.remove('active');
     }
   });
+
+  // Double click brand to select PDF file
+  const brand = document.querySelector('.brand');
+  if (brand && pdfFileInput) {
+    brand.style.cursor = 'pointer';
+    brand.setAttribute('title', 'Çift tıklayarak PDF yükleyin (Gizli özellik!)');
+    brand.addEventListener('dblclick', () => {
+      pdfFileInput.click();
+    });
+  }
+
+  if (pdfFileInput) {
+    pdfFileInput.addEventListener('change', (e) => {
+      const files = e.target.files;
+      if (files.length > 0) {
+        if (files[0].type === 'application/pdf' || files[0].name.toLowerCase().endsWith('.pdf')) {
+          handlePdfFile(files[0]);
+        } else {
+          alert("Lütfen geçerli bir PDF dosyası seçin.");
+        }
+      }
+    });
+  }
+
+  // Close PDF Mode
+  if (btnPdfClose) {
+    btnPdfClose.addEventListener('click', exitPdfMode);
+  }
 
   // Initial Load Trigger
   loadSettings();

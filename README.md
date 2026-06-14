@@ -23,6 +23,13 @@ A premium, client-side web application designed to convert Markdown text into el
 *   **Syntax Highlighting:** Integrated with PrismJS to highlight code blocks automatically matching the active dark theme.
 *   **Auto-Save:** Saves document contents and configuration settings locally via `localStorage` so your progress is preserved across browser sessions.
 
+### 🤫 Secret Feature: PDF Color Inverter
+Convert any standard light-themed PDF document into a high-quality dark mode PDF with fully selectable, copyable, and searchable text!
+*   **How to Activate:** **Double-click** the **MD to PDF** brand logo at the top-left of the header.
+*   **How it Works:** Select a PDF from the file chooser. The app will render the pages in high resolution with inverted colors, overlaid with a transparent text layer.
+*   **How to Save:** Click **Save PDF** in the header, then choose "Save as PDF" in the browser's print dialog (remember to check the "Background graphics" option).
+*   **How to Exit:** Click the **Close** button in the header to return to your Markdown editor.
+
 ### 🛠️ Built With
 - **Structure:** Semantic HTML5
 - **Styling:** Custom Vanilla CSS (featuring glassmorphic interfaces and responsive layout blocks)
@@ -50,6 +57,13 @@ Uygulama tamamen tarayıcı üzerinde (client-side) çalışır; verilerinizin g
 *   **Tipografi Kontrolleri:** Yazı tiplerini (Inter, Merriweather, JetBrains Mono) ve boyutunu (12px - 22px) canlı olarak özelleştirebilirsiniz.
 *   **Kod Renklendirmesi:** PrismJS entegrasyonu sayesinde kod blokları otomatik olarak seçilen temayla uyumlu renklendirilir.
 *   **Otomatik Kaydet:** Metniniz ve tüm tercihleriniz tarayıcının `localStorage` alanına kaydedilir, sayfa yenilense de verileriniz kaybolmaz.
+
+### 🤫 Gizli Özellik: PDF Renk Çevirici (PDF Inverter)
+Mevcut herhangi bir açık renkli standart PDF belgesini yükleyip renklerini koyu moda (dark mode) çevirebilirsiniz. Üstelik metin seçilebilirliği, kopyalama ve arama (`Ctrl + F`) özellikleri tamamen korunur!
+*   **Nasıl Çalıştırılır:** Sol üst köşedeki **MD to PDF** logosuna **çift tıklayın**.
+*   **Nasıl Kullanılır:** Dosya seçiciden PDF belgenizi seçin. Belgeniz metin seçilebilirliği korunarak karanlık temada render edilecektir.
+*   **Koyu PDF Olarak Kaydetme:** Sağ üstteki **PDF Kaydet** butonuna tıklayıp tarayıcı yazdırma penceresinde "PDF Olarak Kaydet" yapın (lütfen yönlendirmede belirtildiği gibi *Arka plan grafikleri* seçeneğini etkin tutun).
+*   **Kapatma:** Normal Markdown editörüne geri dönmek için üst bardaki **Kapat** butonuna basmanız yeterlidir.
 
 ### 🛠️ Kullanılan Teknolojiler
 - **Yapı:** Semantik HTML5

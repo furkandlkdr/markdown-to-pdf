@@ -1217,3 +1217,165 @@ a:hover {
     display: none !important;
   }
 }
+
+/* ==========================================================================
+   HIDDEN PDF INVERTER FEATURES (Canvas + TextLayer approach)
+   ========================================================================== */
+
+.pdf-mode-active .control-panel {
+  display: none !important;
+}
+
+.pdf-mode-active .editor-container {
+  display: none !important;
+}
+
+.pdf-mode-active .workspace {
+  grid-template-columns: 1fr !important;
+}
+
+.pdf-mode-active .preview-container {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.pdf-mode-active .preview-canvas-wrapper {
+  padding: 24px !important;
+  overflow-y: auto !important;
+  height: 100% !important;
+  width: 100% !important;
+}
+
+.pdf-mode-active .markdown-body {
+  padding: 0 !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  width: auto !important;
+  min-height: auto !important;
+}
+
+/* PDF Page structure */
+.pdf-page-wrapper {
+  position: relative;
+  margin: 24px auto;
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--border-color);
+  background-color: #000000;
+  overflow: hidden;
+  border-radius: 6px;
+  transition: all var(--transition-normal);
+}
+
+.pdf-page-canvas {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  filter: invert(1) hue-rotate(180deg);
+}
+
+/* PDF.js Text Layer standard styles */
+.textLayer {
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  overflow: hidden;
+  opacity: 1;
+  line-height: 1.0;
+  pointer-events: auto;
+}
+
+.textLayer span {
+  color: transparent;
+  position: absolute;
+  white-space: pre;
+  cursor: text;
+  transform-origin: 0% 0%;
+}
+
+.textLayer span::selection {
+  background-color: rgba(56, 189, 248, 0.35); /* custom translucent blue highlight */
+}
+
+/* Header buttons toggling in PDF mode */
+.pdf-mode-active #btn-clear {
+  display: none !important;
+}
+
+.pdf-mode-active #btn-header-print {
+  display: inline-flex !important;
+}
+
+.pdf-mode-active #btn-pdf-close {
+  display: inline-flex !important;
+}
+
+/* PDF Mode Print Settings */
+@media print {
+  body.pdf-mode-active {
+    background: transparent !important;
+  }
+  
+  body.pdf-mode-active .app-main {
+    overflow: visible !important;
+    height: auto !important;
+  }
+  
+  body.pdf-mode-active .preview-canvas-wrapper {
+    overflow: visible !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 100% !important;
+    display: block !important;
+  }
+  
+  body.pdf-mode-active .markdown-body {
+    background: transparent !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  body.pdf-mode-active .pdf-page-wrapper {
+    margin: 0 !important;
+    box-shadow: none !important;
+    border: none !important;
+    border-radius: 0 !important;
+    width: 100% !important;
+    height: auto !important;
+    page-break-after: always !important;
+    break-after: page !important;
+    position: relative !important;
+    display: block !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+  
+  body.pdf-mode-active .pdf-page-canvas {
+    width: 100% !important;
+    height: auto !important;
+    display: block !important;
+    filter: invert(1) hue-rotate(180deg) !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+  
+  body.pdf-mode-active .textLayer {
+    display: block !important;
+    opacity: 1 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+  
+  body.pdf-mode-active .textLayer span {
+    color: transparent !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+}
+
+
+

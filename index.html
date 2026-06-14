@@ -46,6 +46,10 @@
         <i data-lucide="printer"></i>
         <span>PDF Kaydet</span>
       </button>
+      <button id="btn-pdf-close" class="btn btn-secondary" style="display: none;" title="PDF Modundan Çık ve Editöre Dön">
+        <i data-lucide="x"></i>
+        <span>Kapat</span>
+      </button>
     </div>
   </header>
 
@@ -88,7 +92,7 @@
         </div>
       </div>
 
-      <div class="panel-section">
+      <div class="panel-section markdown-only-section">
         <h3><i data-lucide="sliders"></i> PDF Sayfa Ayarları</h3>
         
         <div class="control-group">
@@ -117,7 +121,7 @@
         </div>
       </div>
 
-      <div class="panel-section">
+      <div class="panel-section markdown-only-section">
         <h3><i data-lucide="type"></i> Tipografi</h3>
         
         <div class="control-group">
@@ -141,7 +145,7 @@
         </div>
       </div>
 
-      <div class="panel-section">
+      <div class="panel-section markdown-only-section">
         <h3><i data-lucide="settings"></i> Ek Seçenekler</h3>
         <div class="checkbox-group">
           <label class="checkbox-label">
@@ -242,6 +246,9 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+
+  <!-- Hidden PDF file input for secret double-click activation -->
+  <input type="file" id="pdf-file-input" accept="application/pdf" style="display: none;">
 
   <!-- App Script -->
   <script src="app.js?v=4"></script>
