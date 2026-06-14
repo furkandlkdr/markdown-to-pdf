@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MD to PDF - Premium Markdown Converter</title>
+  <meta name="description" content="Markdown belgelerinizi modern, şık ve koyu temalı PDF'lere dönüştürün. md.furkan.software ile anında çıktı alın.">
+  
+  <!-- Favicon (Emoji tabanlı SVG) -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌒</text></svg>">
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Merriweather:ital,wght@0,300;0,400;0,700;1,300&display=swap" rel="stylesheet">
+  
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  
+  <!-- PrismJS Syntax Highlighting (Core & Themes) -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+  
+  <!-- App Stylesheet -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="theme-midnight">
+
+  <!-- Header / Navigation -->
+  <header class="app-header">
+    <div class="brand">
+      <div class="logo-icon">
+        <i data-lucide="file-text"></i>
+      </div>
+      <div class="brand-text">
+        <h1>MD to <span class="accent">PDF</span></h1>
+        <span class="subdomain">md.furkan.software</span>
+      </div>
+    </div>
+    
+    <!-- Quick Actions -->
+    <div class="header-actions">
+      <button id="btn-load-demo" class="btn btn-secondary" title="Örnek Markdown Yükle">
+        <i data-lucide="sparkles"></i>
+        <span>Örnek Yükle</span>
+      </button>
+      <button id="btn-clear" class="btn btn-danger" title="Temizle">
+        <i data-lucide="trash-2"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- Mobile Navigation Tabs (Görünürlük CSS ile mobilde açılacak) -->
+  <div class="mobile-tabs">
+    <button id="tab-edit" class="tab-btn active" title="Editör">
+      <i data-lucide="code"></i>
+      <span>Editör</span>
+    </button>
+    <button id="tab-preview" class="tab-btn" title="Önizleme">
+      <i data-lucide="eye"></i>
+      <span>Önizleme</span>
+    </button>
+    <button id="tab-settings" class="tab-btn" title="Ayarlar">
+      <i data-lucide="sliders"></i>
+      <span>Ayarlar</span>
+    </button>
+  </div>
+
+  <!-- Main Container -->
+  <main class="app-main show-editor">
+    
+    <!-- Sidebar Control Panel -->
+    <aside class="control-panel">
+      <div class="panel-section">
+        <h3><i data-lucide="palette"></i> Görünüm & Tema</h3>
+        
+        <div class="control-group">
+          <label for="select-theme">Koyu Tema Seçimi</label>
+          <div class="select-wrapper">
+            <select id="select-theme">
+              <option value="theme-midnight">Midnight Dark (Deep Blue)</option>
+              <option value="theme-dracula">Dracula (Vampire Theme)</option>
+              <option value="theme-nord">Nordic Night (Frost Slate)</option>
+              <option value="theme-cyberpunk">Cyberpunk Neo (Neon Purple)</option>
+              <option value="theme-obsidian">Monokai Obsidian (Charcoal)</option>
+            </select>
+            <i data-lucide="chevron-down" class="select-arrow"></i>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel-section">
+        <h3><i data-lucide="sliders"></i> PDF Sayfa Ayarları</h3>
+        
+        <div class="control-group">
+          <label for="select-page-size">Sayfa Boyutu</label>
+          <div class="select-wrapper">
+            <select id="select-page-size">
+              <option value="a4">A4 (210mm x 297mm)</option>
+              <option value="letter">Letter (8.5" x 11")</option>
+              <option value="a5">A5 (148mm x 210mm)</option>
+            </select>
+            <i data-lucide="chevron-down" class="select-arrow"></i>
+          </div>
+        </div>
+
+        <div class="control-group">
+          <label for="select-margins">Kenar Boşluğu (Margin)</label>
+          <div class="select-wrapper">
+            <select id="select-margins">
+              <option value="margin-normal">Normal (20mm)</option>
+              <option value="margin-narrow">Dar (10mm)</option>
+              <option value="margin-wide">Geniş (30mm)</option>
+              <option value="margin-none">Sıfır Kenar (0mm)</option>
+            </select>
+            <i data-lucide="chevron-down" class="select-arrow"></i>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel-section">
+        <h3><i data-lucide="type"></i> Tipografi</h3>
+        
+        <div class="control-group">
+          <label for="select-font">Yazı Tipi (Font)</label>
+          <div class="select-wrapper">
+            <select id="select-font">
+              <option value="font-sans">Inter (Sans-Serif)</option>
+              <option value="font-serif">Merriweather (Serif)</option>
+              <option value="font-mono">JetBrains Mono (Monospace)</option>
+            </select>
+            <i data-lucide="chevron-down" class="select-arrow"></i>
+          </div>
+        </div>
+
+        <div class="control-group">
+          <label for="input-font-size">Yazı Boyutu</label>
+          <div class="font-size-control">
+            <input type="range" id="input-font-size" min="12" max="22" value="16" step="1">
+            <span id="font-size-val">16px</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel-section">
+        <h3><i data-lucide="settings"></i> Ek Seçenekler</h3>
+        <div class="checkbox-group">
+          <label class="checkbox-label">
+            <input type="checkbox" id="check-sync-scroll" checked>
+            <span class="custom-checkbox"></span>
+            <span>Senkronize Kaydırma</span>
+          </label>
+        </div>
+        <div class="checkbox-group">
+          <label class="checkbox-label">
+            <input type="checkbox" id="check-page-breaks" checked>
+            <span class="custom-checkbox"></span>
+            <span>Sayfa Sonlarını Göster</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Export Actions -->
+      <div class="export-actions">
+        <button id="btn-print-browser" class="btn btn-primary btn-block" title="Yüksek Kaliteli Vektör PDF">
+          <i data-lucide="printer"></i>
+          <span>Tarayıcı ile Yazdır / Kaydet</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Workspace Panel (Editor on Left, Preview on Right) -->
+    <div class="workspace">
+      
+      <!-- Editor Container -->
+      <div class="workspace-panel editor-container">
+        <div class="panel-header">
+          <div class="panel-title">
+            <i data-lucide="code"></i>
+            <span>Markdown Editörü</span>
+          </div>
+          <div class="editor-stats">
+            <span id="word-count">0 kelime</span>
+            <span class="divider">|</span>
+            <span id="char-count">0 karakter</span>
+          </div>
+        </div>
+        <div class="textarea-wrapper">
+          <textarea id="markdown-input" placeholder="Markdown kodunuzu buraya yazın veya yapıştırın..." spellcheck="false"></textarea>
+        </div>
+      </div>
+      
+      <!-- Preview Container -->
+      <div class="workspace-panel preview-container">
+        <div class="panel-header">
+          <div class="panel-title">
+            <i data-lucide="eye"></i>
+            <span>Canlı Önizleme (PDF Taslağı)</span>
+          </div>
+          <div class="preview-info">
+            <i data-lucide="info" class="info-icon" title="Bu alan yazdırılacak sayfa düzenini simüle eder. Gerçek sayfa bölünmeleri tarayıcı yazdırma penceresinde otomatik ayarlanır."></i>
+            <span>A4 Dikey</span>
+          </div>
+        </div>
+        
+        <!-- Document Canvas -->
+        <div class="preview-canvas-wrapper" id="preview-wrapper">
+          <div id="preview-output" class="markdown-body font-sans margin-normal a4">
+            <!-- Rendered HTML will go here -->
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Print Info Overlay -->
+  <div class="print-instruction-modal" id="print-instruction">
+    <div class="modal-content">
+      <h2><i data-lucide="printer"></i> Yazdırma İpuçları</h2>
+      <p>Tarayıcı yazdırma penceresi açıldığında en yüksek kaliteyi elde etmek için lütfen şu ayarları doğrulayın:</p>
+      <ul>
+        <li><strong>Hedef:</strong> PDF olarak kaydet (Save as PDF)</li>
+        <li><strong>Renkler/Grafikler:</strong> Arka plan grafiklerini yazdır seçeneğini <strong>açık</strong> (Etkin) tutun. (Aksi takdirde arka plan siyah görünmeyebilir)</li>
+        <li><strong>Kenar Boşlukları:</strong> Yok (None) veya Varsayılan (Default) yapın. (Programın kenar boşlukları ile çakışmaması için)</li>
+        <li><strong>Üstbilgi ve Altbilgi:</strong> Gizleyin (Tarih ve URL'lerin PDF'te görünmemesi için).</li>
+      </ul>
+      <div class="modal-footer">
+        <button id="btn-start-print" class="btn btn-primary">Devam Et ve Yazdır</button>
+        <button id="btn-close-instruction" class="btn btn-secondary">Kapat</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Markdown & Prism JS Libraries -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-css.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+
+  <!-- App Script -->
+  <script src="app.js"></script>
+</body>
+</html>
