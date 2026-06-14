@@ -1,3 +1,9 @@
+// Error reporter for debugging on mobile/tablets
+window.onerror = function(message, source, lineno, colno, error) {
+  alert("JS Error:\nMsg: " + message + "\nLine: " + lineno + "\nFile: " + source);
+  return false;
+};
+
 document.addEventListener('DOMContentLoaded', () => {
   // Lucide Icons initialization
   lucide.createIcons();
