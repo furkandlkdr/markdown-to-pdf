@@ -1122,14 +1122,15 @@ a:hover {
    PRINT MEDIA CUSTOMIZATION (The core requirements)
    ========================================================================== */
 @media print {
-  /* Hide all UI elements */
-  .app-header, 
-  .control-panel, 
-  .panel-header, 
-  .editor-container, 
-  .print-instruction-modal,
-  .preview-container .panel-header, 
-  .preview-info {
+  /* Hide all UI elements with high specificity to override active mobile tab rules */
+  body .app-header, 
+  body .print-instruction-modal,
+  body .app-main .control-panel,
+  body .app-main.show-settings .control-panel,
+  body .app-main .editor-container,
+  body .app-main.show-editor .editor-container,
+  body .preview-container .panel-header,
+  body .preview-info {
     display: none !important;
   }
 
@@ -1138,6 +1139,26 @@ a:hover {
     color: var(--text-primary) !important;
     overflow: visible !important;
     height: auto !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Force display the preview container regardless of active tab */
+  body .app-main .preview-container,
+  body .app-main.show-editor .preview-container,
+  body .app-main.show-settings .preview-container,
+  body .app-main.show-preview .preview-container {
+    display: block !important;
+    width: 100% !important;
+    height: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: visible !important;
+    box-shadow: none !important;
+    border: none !important;
+    background: transparent !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
   }
 
   .app-main {
@@ -1154,17 +1175,6 @@ a:hover {
     padding: 0 !important;
     overflow: visible !important;
     grid-template-columns: 1fr !important;
-  }
-
-  .preview-container {
-    width: 100% !important;
-    height: auto !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    overflow: visible !important;
-    box-shadow: none !important;
-    border: none !important;
-    background: transparent !important;
   }
 
   .preview-canvas-wrapper {
@@ -1186,8 +1196,6 @@ a:hover {
     height: auto !important;
     background-color: var(--bg-color) !important;
     color: var(--text-primary) !important;
-    
-    /* Crucial CSS properties to force print background colors/styles */
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
   }
